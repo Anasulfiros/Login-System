@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from Login_System import settings
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -44,7 +46,16 @@ def signup(request):
 
         myuser.save()
 
-        messages.success(request, "Your account has been successfully created.")
+        messages.success(request, "Your account has been successfully created. We have sent you a confirmation email, Please confirm your email in order to activate your account.")
+
+        #Welcome email
+
+        subject = "Welcome to Login system"
+        message = "Hello " + myuser.first_name +"!! \n" + "Welcome to Login system by Anasul Firos \n Thank you for visiting our Website \n We have also sent you a confirmation email, Please confirm email in order to activate your account. \n\n Thanking you\n Anasul Firos"
+        from_email = settings.EMAIL_HOST_USER
+        to_list = [myuser.email]
+        send_mail(subject, message, from_email, to_list, fail_silently=True)
+
 
         return redirect('signin')
 
